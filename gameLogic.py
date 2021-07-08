@@ -229,7 +229,7 @@ class handsAvailable:
         self.cHand =  np.sort(currentHand).astype(int)
         self.handLength = currentHand.size
         self.cards = {}
-        self.setValueCurrentHand = list(set(self.convertAllToValue(currentHand))^set([13])) #loại heo ra để tìm straight dể dàng hơn
+        self.setValueCurrentHand = list(set(self.convertAllToValue(currentHand))) #loại heo ra để tìm straight dể dàng hơn
         self.cardsValue = self.convertAllToValue(currentHand)
         for i in range(self.cHand.size):
             self.cards[self.cHand[i]] = card(self.cHand[i],i)
@@ -267,7 +267,10 @@ class handsAvailable:
     def convertAllToValue(self,currentHand):
         arrValue = []
         for i in currentHand:
-            arrValue.append(np.ceil(i/4))
+            if np.ceil(i/4) == 13:
+                pass
+            else:
+                arrValue.append(np.ceil(i/4))
         return arrValue
     def findWhereInArray(self,listValueCard,number):
         arrArgWhere = []
@@ -313,7 +316,7 @@ class handsAvailable:
                             for c_6 in range(c_5+1,n_5):
                                 if c_6 >=self.handLength:
                                     continue
-                                if self.cHand[c_6] != 52 or  self.cHand[c_6] != 51 or self.cHand[c_6] != 50 or self.cHand[c_6] != 49:
+                                if self.cHand[c_6] != 52 and  self.cHand[c_6] != 51 and self.cHand[c_6] != 50 and self.cHand[c_6] != 49:
                                     if isThreePines(np.array([self.cHand[c_1], self.cHand[c_2], self.cHand[c_3],self.cHand[c_4],self.cHand[c_5],self.cHand[c_6]])):
                                         self.threePines.append([self.cHand[c_1], self.cHand[c_2], self.cHand[c_3],self.cHand[c_4],self.cHand[c_5],self.cHand[c_6]])
                                         self.nThreePines += 1
@@ -342,10 +345,10 @@ class handsAvailable:
                                     for c_8 in range(c_7+1,n_7):
                                         if c_8 >=self.handLength:
                                             continue
-                                        if self.cHand[c_8] != 52 or  self.cHand[c_8] != 51 or self.cHand[c_8] != 50 or self.cHand[c_8] != 49:
+                                        if self.cHand[c_8] != 52 and  self.cHand[c_8] != 51 and self.cHand[c_8] != 50 and self.cHand[c_8] != 49:
                                             if isFourPines(np.array([self.cHand[c_1], self.cHand[c_2], self.cHand[c_3],self.cHand[c_4],self.cHand[c_5],self.cHand[c_6],self.cHand[c_7],self.cHand[c_8]])):
                                                 self.fourPines.append([self.cHand[c_1], self.cHand[c_2], self.cHand[c_3],self.cHand[c_4],self.cHand[c_5],self.cHand[c_6],self.cHand[c_7],self.cHand[c_8]])
-                                                self.nfourPines += 1
+                                                self.nFourPines += 1
                                                 self.cards[self.cHand[c_1]].inFourPines = 1
                                                 self.cards[self.cHand[c_2]].inFourPines = 1
                                                 self.cards[self.cHand[c_3]].inFourPines = 1
@@ -359,10 +362,10 @@ class handsAvailable:
         cInd = 0
         sInd = 0
         countLoop = 0
-        while cInd < self.setValueCurrentHand.size - 1:
+        while cInd < len(self.setValueCurrentHand) - 1:
             countLoop += 1
-            cVal = self.cards[self.setValueCurrentHand[cInd]].value
-            nVal = self.cards[self.setValueCurrentHand[cInd+1]].value
+            cVal = self.setValueCurrentHand[cInd]
+            nVal = self.setValueCurrentHand[cInd+1]
             if nVal == cVal + 1:
                 streak += 1
                 cInd += 1
@@ -373,10 +376,10 @@ class handsAvailable:
                 for straight in straightIndex:
                     lstAppend = []
                     for j in straight:
-                        self.cards[self.cHand[j]].inStraight[streak+1] = 1
+                        self.cards[self.cHand[j]].inStraight[streak-2] = 1
                         lstAppend.append(self.cHand[j])
-                    self.straights[streak+1].append(lstAppend.append(self.cHand[j]))
-                    self.nStraights[streak+1] += 1
+                    self.straights[streak-2].append(lstAppend)
+                    self.nStraights[streak-2] += 1
             if countLoop != streak:
                 streak = 0
                 countLoop = 0

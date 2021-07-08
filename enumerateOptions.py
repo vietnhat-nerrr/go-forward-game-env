@@ -1,23 +1,20 @@
 #enumerate options
 import pickle
 import numpy as np
-import gameLogic_
+import gameLogic
 
 nActions = np.array([13,33, 246, 670, 1263, 1711, 1716, 1286, 715, 286, 78, 13,1,8031])
 nAcSum = np.cumsum(nActions[:-1]) # [  13   46  292  962 2225 3936 5652 6938 7653 7939 8017 8030]
 #nActions = np.array([13,33,31,330,1287,1694]) luật chine
 #print(nAcSum) => [  13   46   77  407 1694] cọng dồn kết quả 
 with open('actionIndexTable.pkl','rb') as f:  # Python 3: open(..., 'rb')
-    twoCardIndices, threeCardIndices, fourCardIndices, fiveCardIndices, sixCardIndices ,sevenCardIndices,eightCardIndices,nineCardIndices,tenCardIndices,elevenCardIndices,twelveCardIndices,thirTeenCardIndices,inverseTwoCardIndices, inverseThreeCardIndices, inverseFourCardIndices, inverseFiveCardIndices,inverseSixCardIndices,inverseSevenCardIndices,inverseEightCardIndices,inverseNineCardIndices,inverseTenCardIndices,inverseElevenCardIndices,inverseTwelveCardIndices,inverseThirTeenCardIndices = pickle.load(f)
+    twoCardIndices, threeCardIndices, fourCardIndices, fiveCardIndices, sixCardIndices ,sevenCardIndices,eightCardIndices,nineCardIndices,tenCardIndices,elevenCardIndices,twelveCardIndices,thirTeenCardIndices,\
+    inverseTwoCardIndices, inverseThreeCardIndices, inverseFourCardIndices, inverseFiveCardIndices,inverseSixCardIndices,inverseSevenCardIndices,inverseEightCardIndices,inverseNineCardIndices,inverseTenCardIndices,inverseElevenCardIndices,inverseTwelveCardIndices,inverseThirTeenCardIndices = pickle.load(f)
 
 passInd = nActions[-1] # passIndex
 noTurn = passInd + 1 #8032
 doneFinish = passInd + 2 #8033
-def getIndex(option, nCards,info=[True,True]): # info mean check noTurn or doneFinish
-    if info[0] == True:
-        return noTurn
-    if info[1] == True:
-        return doneFinish
+def getIndex(option, nCards): # info mean check noTurn or doneFinish
     if nCards==0: #pass
         return passInd
 
@@ -55,10 +52,10 @@ def getOptionNC(ind):
         return ind - nAcSum[10], 12
     elif ind < nAcSum[12]:
         return ind - nAcSum[11], 13
-def firstPlayerOptions(handOptions): # 
+def firstPlayerOptions(hand,handOptions): # 
     if handOptions.cards[1].indexInHand == 0: ## 3 Bích đi trước kiêm tra 3 Bích có trong bài không
         card = handOptions.cards[1]
-        validInds = np.zeros((100,), dtype=int) # 100 ước lượng
+        validIndReturn = np.zeros((100,), dtype=int) # 100 ước lượng
         c = 0
         if card.inPair != 0:
 
@@ -68,9 +65,9 @@ def firstPlayerOptions(handOptions): #
                 for pair in handOptions.pairs:
                     cardInds[0] = handOptions.cards[pair[0]].indexInHand
                     cardInds[1] = handOptions.cards[pair[1]].indexInHand
-                    if cardInds[0] == 0:
+                    if cardInds[0] != 0:
                         continue
-                    validInds[c] = getIndex(twoCardIndices[cardInds[0]][cardInds[1]],2)
+                    validIndReturn[c] = getIndex(twoCardIndices[cardInds[0]][cardInds[1]],2)
                     c += 1
         if card.inThreeOfAKind != 0:
             cardInds = np.zeros((3,), dtype=int)
@@ -80,9 +77,9 @@ def firstPlayerOptions(handOptions): #
                     cardInds[0] = handOptions.cards[three[0]].indexInHand
                     cardInds[1] = handOptions.cards[three[1]].indexInHand
                     cardInds[2] = handOptions.cards[three[2]].indexInHand
-                    if cardInds[0] == 0:
+                    if cardInds[0] != 0:
                         continue
-                    validInds[c] = getIndex(twoCardIndices[cardInds[0]][cardInds[1]][cardInds[2]],3)
+                    validIndReturn[c] = getIndex(threeCardIndices[cardInds[0]][cardInds[1]][cardInds[2]],3)
                     c += 1
         if card.inFourOfAKind != 0:
             cardInds = np.zeros((4,), dtype=int)
@@ -93,11 +90,12 @@ def firstPlayerOptions(handOptions): #
                     cardInds[1] = handOptions.cards[four[1]].indexInHand
                     cardInds[2] = handOptions.cards[four[2]].indexInHand
                     cardInds[3] = handOptions.cards[four[3]].indexInHand
-                    if cardInds[0] == 0:
+                    if cardInds[0] != 0:
                         continue
-                    validInds[c] = getIndex(twoCardIndices[cardInds[0]][cardInds[1]][cardInds[2]],[cardInds[3]],4)
+                    validIndReturn[c] = getIndex(fourCardIndices[cardInds[0]][cardInds[1]][cardInds[2]],[cardInds[3]],4)
                     c += 1
         if card.inThreePines != 0:
+            cardInds = np.zeros((6,), dtype=int)
             if handOptions.nThreePines > 0:
                 for threepine in handOptions.threePines:
                     cardInds[0] = handOptions.cards[threepine[0]].indexInHand
@@ -106,11 +104,12 @@ def firstPlayerOptions(handOptions): #
                     cardInds[3] = handOptions.cards[threepine[3]].indexInHand
                     cardInds[4] = handOptions.cards[threepine[4]].indexInHand
                     cardInds[5] = handOptions.cards[threepine[5]].indexInHand
-                    if cardInds[0] == 0:
+                    if cardInds[0] != 0:
                         continue
-                    validInds[c] = getIndex(sixCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]][cardInds[4]][cardInds[5]],6)
+                    validIndReturn[c] = getIndex(sixCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]][cardInds[4]][cardInds[5]],6)
                     c += 1
         if card.inFourPines !=0:
+            cardInds = np.zeros((8,), dtype=int)
             if handOptions.nFourPines > 0:
                 for four in handOptions.fourPines:
                     cardInds[0] = handOptions.cards[four[0]].indexInHand
@@ -122,12 +121,13 @@ def firstPlayerOptions(handOptions): #
                     cardInds[6] = handOptions.cards[four[6]].indexInHand
                     cardInds[7] = handOptions.cards[four[7]].indexInHand
                     index_ =[cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]]
-                    if cardInds[0] == 0:
+                    if cardInds[0] != 0:
                         continue
-                    validInds[c] = getIndex(inverseEightCardIndices[elevenCardIndices.index(index_)],8)
+                    validIndReturn[c] = getIndex(inverseEightCardIndices[elevenCardIndices.index(index_)],8)
                     c += 1
         for i in range(len(card.inStraight)):
             if card.inStraight[i] !=0:
+                cardInds = np.zeros((13,), dtype=int)
                 index_  = []
                 if handOptions.nStraights[i] > 0:
                     nCard = i + 3
@@ -135,47 +135,56 @@ def firstPlayerOptions(handOptions): #
                         for i in range(0,nCard):
                             cardInds[i] = handOptions.cards[straight[i]].indexInHand
                             index_.append(cardInds[i])
-                        if cardInds[0] == 0:
+                        if cardInds[0] != 0:
+                            index_ = []
                             continue
                         if nCard== 3:
-                            validInds[c] = getIndex(threeCardIndices[cardInds[0]][cardInds[1]][cardInds[2]],3)
+                            validIndReturn[c] = getIndex(threeCardIndices[cardInds[0]][cardInds[1]][cardInds[2]],3)
                             c += 1
                         if nCard == 4:
-                            validInds[c] = getIndex(fourCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]],4)
+                            validIndReturn[c] = getIndex(fourCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]],4)
                             c += 1
                         if nCard == 5:
-                            validInds[c] = getIndex(fiveCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]][cardInds[4]],5)
+                            validIndReturn[c] = getIndex(fiveCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]][cardInds[4]],5)
                             c += 1
                         if nCard == 6:
-                            validInds[c] = getIndex(sixCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]][cardInds[4]][cardInds[5]],6)
+                            validIndReturn[c] = getIndex(sixCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]][cardInds[4]][cardInds[5]],6)
                             c += 1
                         if(nCard == 7):
-                            validInds[c] = getIndex(inverseSevenCardIndices[sevenCardIndices.index(index_)],7)
+                            validIndReturn[c] = getIndex(inverseSevenCardIndices[sevenCardIndices.index(index_)],7)
                             c += 1
                         if(nCard == 8):
-                            validInds[c] = getIndex(inverseEightCardIndices[eightCardIndices.index(index_)],8)
+                            validIndReturn[c] = getIndex(inverseEightCardIndices[eightCardIndices.index(index_)],8)
                             c += 1
                         if(nCard == 9):
-                            validInds[c] = getIndex(inverseNineCardIndices[nineCardIndices.index(index_)],9)
+                            validIndReturn[c] = getIndex(inverseNineCardIndices[nineCardIndices.index(index_)],9)
                             c += 1
                         if(nCard == 10):
-                            validInds[c] = getIndex(inverseTenCardIndices[tenCardIndices.index(index_)],10)
+                            validIndReturn[c] = getIndex(inverseTenCardIndices[tenCardIndices.index(index_)],10)
                             c += 1
                         if(nCard == 11):
-                            validInds[c] = getIndex(inverseElevenCardIndices[elevenCardIndices.index(index_)],11)
+                            validIndReturn[c] = getIndex(inverseElevenCardIndices[elevenCardIndices.index(index_)],11)
                             c += 1
                         if(nCard == 12):
-                            validInds[c] = getIndex(inverseTwelveCardIndices[twelveCardIndices.index(index_)],12)
+                            validIndReturn[c] = getIndex(inverseTwelveCardIndices[twelveCardIndices.index(index_)],12)
                             c += 1
                         if(nCard == 13):
-                            validInds[c] = getIndex(inverseThirTeenCardIndices[thirTeenCardIndices.index(index_)],13)
+                            validIndReturn[c] = getIndex(inverseThirTeenCardIndices[thirTeenCardIndices.index(index_)],13)
                             c += 1
                         index_ = []
+        nCards = len(hand)
+        #validInds = np.zeros((nCards), dtype=int)
+        for i in range(nCards):
+            if hand[i] != 1:
+                continue
+            validIndReturn[c] = getIndex(i,1)
+            c += 1
+        #print(c)
         if c > 0:
-            return validInds[0:c]
+            return validIndReturn[0:c]
         else:
             return -1    
-    return -1       
+    return -99       
 def greaterSixCardOptions(handOptions, prevHand=[],prevType = 0):
     #prevType = 0 - no hand, you have control and can play any 5 card
     #         = 1 - straight
@@ -216,8 +225,8 @@ def greaterSixCardOptions(handOptions, prevHand=[],prevType = 0):
                     cardInds[3] = handOptions.cards[straight[3]].indexInHand
                     cardInds[4] = handOptions.cards[straight[4]].indexInHand
                     cardInds[5] = handOptions.cards[straight[5]].indexInHand
-                    cardInds[6] = handOptions.cards[straight[5]].indexInHand
-                    cardInds[7] = handOptions.cards[straight[5]].indexInHand
+                    cardInds[6] = handOptions.cards[straight[6]].indexInHand
+                    cardInds[7] = handOptions.cards[straight[7]].indexInHand
                     index_ =[cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]]
                     if prevType == 1:
                         if handOptions.cHand[cardInds[7]] < prevHand[7]:
@@ -323,6 +332,7 @@ def sixCardOptions(handOptions, prevHand=[],prevType = 0):
         pass
     else:
         if handOptions.nStraights[3] > 0:
+            print(handOptions.straights[3])
             for straight in handOptions.straights[3]:
                 cardInds[0] = handOptions.cards[straight[0]].indexInHand
                 cardInds[1] = handOptions.cards[straight[1]].indexInHand
@@ -332,7 +342,7 @@ def sixCardOptions(handOptions, prevHand=[],prevType = 0):
                 cardInds[5] = handOptions.cards[straight[5]].indexInHand
 
                 if prevType == 1:
-                    if handOptions.cHand[cardInds[3]] < prevHand[3]:
+                    if handOptions.cHand[cardInds[5]] < prevHand[5]:
                         continue
                 validInds[c] = getIndex(sixCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]][cardInds[4]][cardInds[5]],6)
                 c += 1
@@ -358,7 +368,7 @@ def fiveCardOptions(handOptions, prevHand=[],prevType=0):
             cardInds[1] = handOptions.cards[straight[1]].indexInHand
             cardInds[2] = handOptions.cards[straight[2]].indexInHand
             cardInds[3] = handOptions.cards[straight[3]].indexInHand
-            cardInds[4] = handOptions.cards[straight[3]].indexInHand
+            cardInds[4] = handOptions.cards[straight[4]].indexInHand
 
             if prevType == 1:
                 if handOptions.cHand[cardInds[4]] < prevHand[4]:
@@ -519,7 +529,7 @@ def oneCardOptions(hand,handOptions, prevHand = [], prevType = 0,startPlay= Fals
     c = 0
     for i in range(nCards):
         if prevType == 1:
-            if prevHand > hand[i]:
+            if prevHand[-1] > hand[i]:
                 continue
         validInds[c] = getIndex(i,1)
         c += 1
