@@ -591,7 +591,7 @@ class big2Game:
                 enumerateOptions.thirTeenCardIndices[option])]
         for i in handToPlay:
             self.cardsPlayed[self.playersGo-1][i-1] = 1
-        print(handToPlay)
+        #print(handToPlay)
         self.handsPlayed[self.goIndex] = handPlayed(
             handToPlay, self.playersGo)  # hand là chuổi các cards
         self.control = 0
