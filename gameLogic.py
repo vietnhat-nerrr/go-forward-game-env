@@ -174,6 +174,8 @@ def convertHand(hand):
         output[counter] = int((base-1)*4 + suit)
         counter += 1
     return output
+def convertHandToNumber(HandStr_):
+    pass
 
 def cardValue(num):
     return np.ceil(num/4)    

@@ -20,11 +20,11 @@ def sf01(arr):
 
 class big2PPOSimulation(object):
     
-    def __init__(self, sess, *, inpDim = 412, nGames = 8, nSteps = 20, nMiniBatches = 4, nOptEpochs = 5, lam = 0.95, gamma = 0.995, ent_coef = 0.01, vf_coef = 0.5, max_grad_norm = 0.5, minLearningRate = 0.000001, learningRate, clipRange, saveEvery = 500):
+    def __init__(self, sess, *, inpDim = 732, nGames = 8, nSteps = 20, nMiniBatches = 4, nOptEpochs = 5, lam = 0.95, gamma = 0.995, ent_coef = 0.01, vf_coef = 0.5, max_grad_norm = 0.5, minLearningRate = 0.000001, learningRate, clipRange, saveEvery = 500):
         
         #network/model for training
-        self.trainingNetwork = PPONetwork(sess, inpDim, 1695, "trainNet")
-        self.trainingModel = PPOModel(sess, self.trainingNetwork, inpDim, 1695, ent_coef, vf_coef, max_grad_norm)
+        self.trainingNetwork = PPONetwork(sess, inpDim, 8032, "trainNet")
+        self.trainingModel = PPOModel(sess, self.trainingNetwork, inpDim, 8032, ent_coef, vf_coef, max_grad_norm)
         
         #player networks which choose decisions - allowing for later on experimenting with playing against older versions of the network (so decisions they make are not trained on).
         self.playerNetworks = {}
@@ -33,7 +33,7 @@ class big2PPOSimulation(object):
         self.playerNetworks[1] = self.playerNetworks[2] = self.playerNetworks[3] = self.playerNetworks[4] = self.trainingNetwork
         self.trainOnPlayer = [True, True, True, True]
         
-        tf.compat.v1.global_variables_initializer().run(session=sess)
+        tf.global_variables_initializer().run(session=sess)
         
         #environment
         self.vectorizedGame = vectorizedBig2Games(nGames)
@@ -202,11 +202,12 @@ class big2PPOSimulation(object):
 if __name__ == "__main__":
     import time
     
-    with tf.compat.v1.Session() as sess:
+    with tf.Session() as sess:
         mainSim = big2PPOSimulation(sess, nGames=64, nSteps=20, learningRate = 0.00025, clipRange = 0.2)
         start = time.time()
         mainSim.train(1000000000)
         end = time.time()
         print("Time Taken: %f" % (end-start))
+        
         
         

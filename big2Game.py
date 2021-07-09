@@ -124,15 +124,15 @@ class big2Game:
         self.fillNeuralNetworkHand(4)
         # self.updateNeuralNetworkInputs(np.array([1]),whoHas3D)
         self.gameOver = 0
-        self.positionFinish = np.zeros((4,))
+        self.positionFinish = np.zeros((5,))
         self.rewards = np.zeros((4,))
         self.goCounter = 0  # đếm số bước đi
 
     def resetCanPlay(self):
-        self.canPlay[1] = True
-        self.canPlay[2] = True
-        self.canPlay[3] = True
-        self.canPlay[4] = True
+        self.noTurn[1] = False
+        self.noTurn[2] = False
+        self.noTurn[3] = False
+        self.noTurn[4] = False
 
     def fillNeuralNetworkHand(self, player):  # table 1
         handOptions = gameLogic.handsAvailable(self.currentHands[player])
@@ -450,8 +450,8 @@ class big2Game:
             self.neuralNetworkInputs[nPlayer][nPlayerInd+64] = 1
             self.neuralNetworkInputs[nnPlayer][nnPlayerInd+64] = 1
             self.neuralNetworkInputs[nnnPlayer][nnnPlayerInd+64] = 1
-            value = int(gameLogic.cardValue(prevHand[7]))
-            suit = prevHand[7] % 4
+            value = int(gameLogic.cardValue(prevHand[6]))
+            suit = prevHand[6] % 4
             self.neuralNetworkInputs[nPlayer][phInd+27] = 1
             self.neuralNetworkInputs[nnPlayer][phInd+27] = 1
             self.neuralNetworkInputs[nnnPlayer][phInd+27] = 1
@@ -534,22 +534,36 @@ class big2Game:
     def updateGame(self, option, nCards=0):
         self.goCounter += 1
         self.firstStep = False
-        if option == -1 or option == -2 or option == -3:
+        if option == -1 :
             # cPlayer pass
             cPlayer = self.playersGo
+            self.noTurn[self.playersGo] = True
             self.updateNeuralNetworkPass(cPlayer)
-            for i in range(0, 4):
+            check = True
+            while check:
                 self.playersGo += 1
                 if self.playersGo == 5:
                     self.playersGo = 1
-                if self.noTurn[self.playersGo] == False:
-                    break
-                if self.playerFinish[self.playersGo] == False:
-                    break
+                if self.playerFinish[self.playersGo] == True:
+                    check = True
+                elif self.playerFinish[self.playersGo] == False and self.noTurn[self.playersGo] == True:
+                    check = True
+                else: check = False
+
+            playerNoCanPlay = 0
+            for i in range(1,5):
+                if self.playerFinish[i] == True or self.noTurn[i] == True:
+                    playerNoCanPlay += 1
+            if playerNoCanPlay == 3:
+                self.control = 1
+
             self.passCount += 1
-            self.noTurn[cPlayer] = True
+
+            
+            
             if self.passCount == 3:
                 self.control = 1
+            if self.control ==1:
                 self.resetCanPlay()
                 self.passCount = 0
             self.updateTurnAndFinish(cPlayer)
@@ -602,37 +616,55 @@ class big2Game:
         most important set how to end game
         """
         if self.currentHands[self.playersGo].size == 0:
+            self.playerFinish[self.playersGo] = True
+            self.noTurn[self.playersGo] = False
             self.assignRewards()
             if self.gameOver == 1:
                 return
         self.updateNeuralNetworkInputs(handToPlay, self.playersGo)
-        for i in range(0, 4):
+        self.updateTurnAndFinish(self.playersGo)
+        check = True
+        while check:
             self.playersGo += 1
             if self.playersGo == 5:
                 self.playersGo = 1
-            if self.noTurn[self.playersGo] == False:
-                break
-            if self.playerFinish[self.playersGo] == False:
-                break
+            if self.playerFinish[self.playersGo] == True:
+                check = True
+            elif self.playerFinish[self.playersGo] == False and self.noTurn[self.playersGo] == True:
+                check = True
+            else: check = False
+        
+
 
     def assignRewards(self):
-        numberDone = 4
-        for i in self.positionFinish:
+        numberDone = 0
+        for i in self.positionFinish: #(0,0,0,0,0)
             if i != 0:
                 numberDone += 1
-        if(numberDone == 4):
+
+        if numberDone == 0:
+            self.positionFinish[self.playersGo] = 1
+        if numberDone == 1:
+            self.positionFinish[self.playersGo] = 2
+        if numberDone == 2:
+            self.positionFinish[self.playersGo] = 3
             self.gameOver = 1
-        self.positionFinish[self.playersGo] = numberDone + 1
+            print("....", end ="")
+            print(self.gameOver)
+            for i in range(1,5):
+                if self.positionFinish[i] != 0:
+                    self.positionFinish[i] = 4
+            
         if self.gameOver == 1:
-            for i in range(self.positionFinish.size):
+            for i in range(1,self.positionFinish.size):
                 if self.positionFinish[i] == 1:
-                    self.rewards[i] == 20
+                    self.rewards[i-1] = 20
                 elif self.positionFinish[i] == 2:
-                    self.rewards[i] == 10
+                    self.rewards[i-1] = 10
                 elif self.positionFinish[i] == 3:
-                    self.rewards[i] == -10
+                    self.rewards[i-1] = -10
                 elif self.positionFinish[i] == 4:
-                    self.rewards[i] == -20
+                    self.rewards[i-1] = -20
 
     def returnAvailableActions(self):
         if self.firstStep ==True and self.firstAction == False:
@@ -660,7 +692,7 @@ class big2Game:
                 prevHand = self.handsPlayed[self.goIndex-1].hand
                 nCardsToBeat = len(prevHand)
 
-                if nCardsToBeat > 1:
+                if nCardsToBeat >= 1:
                     handOptions = gameLogic.handsAvailable(currHand)
 
                 if nCardsToBeat == 1:
@@ -722,9 +754,9 @@ class big2Game:
                 sixCardOptions = enumerateOptions.sixCardOptions(handOptions)
                 greaterSixCardOptions = enumerateOptions.greaterSixCardOptions(
                     handOptions)
-
-                for option in oneCardOptions:
-                    availableActions[option] = 1
+                if not isinstance(oneCardOptions, int):
+                    for option in oneCardOptions:
+                        availableActions[option] = 1
 
                 if not isinstance(twoCardOptions, int):
                     for option in twoCardOptions:
@@ -742,10 +774,10 @@ class big2Game:
                     for option in fiveCardOptions:
                         availableActions[option] = 1
                 if not isinstance(sixCardOptions, int):
-                    for option in fiveCardOptions:
+                    for option in sixCardOptions:
                         availableActions[option] = 1
                 if not isinstance(greaterSixCardOptions, int):
-                    for option in fiveCardOptions:
+                    for option in greaterSixCardOptions:
                         availableActions[option] = 1
 
                 return availableActions
@@ -759,6 +791,7 @@ class big2Game:
         getOptionNC được sử dụng ngược với hàm index
         """
         if self.gameOver == 0:
+            print("... step")
             reward = None
             done = False
             info = {}
@@ -771,12 +804,13 @@ class big2Game:
             info['numTurns'] = self.goCounter
             info['rewards'] = self.rewards
             # what else is worth monitoring?
+            print("... must end")
             self.reset()
         return reward, done, info
 
     def getCurrentState(self):
-        #return self.playersGo, self.neuralNetworkInputs[self.playersGo].reshape(1, 732), convertAvailableActions(self.returnAvailableActions()).reshape(1,8032)
-        return self.playersGo, self.neuralNetworkInputs[self.playersGo].reshape(1, 732), self.returnAvailableActions().reshape(1,8032)
+        return self.playersGo, self.neuralNetworkInputs[self.playersGo].reshape(1, 732), convertAvailableActions(self.returnAvailableActions()).reshape(1,8032)
+        #return self.playersGo, self.neuralNetworkInputs[self.playersGo].reshape(1, 732), self.returnAvailableActions().reshape(1,8032)
 
 
 # now create a vectorized environment
@@ -965,7 +999,7 @@ class vectorizedBig2GamesTest():
             count += 1
             string += "] "
         for i in range(currAvailAcs[0][:-1].size):
-            if currAvailAcs[0][i] == 1:
+            if currAvailAcs[0][i] == 0:
                 option, nC = enumerateOptions.getOptionNC(i)
                 listAction.append(i)
                 if nC == 1:
@@ -1006,7 +1040,7 @@ class vectorizedBig2GamesTest():
                 else:
                     actions.append(
                         np.array(enumerateOptions.thirTeenCardIndices[option]))
-        if currAvailAcs[0][-1] == 1:
+        if currAvailAcs[0][-1] == 0:
             actions.append("Pass")
             listAction.append(currAvailAcs.size - 1)
         #print(pGos)

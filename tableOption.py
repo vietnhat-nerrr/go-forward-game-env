@@ -229,9 +229,9 @@ inverseThirTeenCardIndices = list(twelveCardIndices_.keys())
 
 
 print(inverseNineCardIndices[nineCardIndices.index([2, 4, 5, 6, 7, 9, 10, 11, 12])])
-print(fourCardIndices[5][6][7][8])
+print(sixCardIndices[5][6][7][8][9][10])
 print(np.array(nineCardIndices[700]))
-print(inverseFourCardIndices[20])
+print(inverseSixCardIndices[1683])
 print([two,three,four,five,six,seven,eight,nine,ten,eleven,twelve])
 
 table = [twoCardIndices,threeCardIndices,fourCardIndices,fiveCardIndices,sixCardIndices,sevenCardIndices,eightCardIndices,nineCardIndices,tenCardIndices,elevenCardIndices,twelveCardIndices,thirTeenCardIndices,
