@@ -1,4 +1,4 @@
-# big 2 class
+# go forward class
 # tiến lên miền Nam
 import enumerateOptions
 import gameLogic
@@ -50,7 +50,7 @@ class handPlayed:  # return type hand card played by player
             self.type = 6
 
 
-class big2Game:
+class goForwardGame:
     def __init__(self):
         self.reset()
 
@@ -806,7 +806,6 @@ class big2Game:
             info['Position result'] = self.positionFinish[1:5]
 
         else:
-            print("... end")
             reward = self.rewards
             done = True
             info = {}
@@ -824,7 +823,7 @@ class big2Game:
 # now create a vectorized environment
 def worker(remote, parent_remote):
     parent_remote.close()
-    game = big2Game()
+    game = goForwardGame()
     while True:
         cmd, data = remote.recv()
         if cmd == 'step':
@@ -845,7 +844,7 @@ def worker(remote, parent_remote):
             break
 
 
-class vectorizedBig2Games(object):
+class vectorizedGoForwardGames(object):
     def __init__(self, nGames):
 
         self.waiting = False
@@ -971,9 +970,9 @@ class vectorizedBig2Games(object):
         self.closed = True
 
 
-class vectorizedBig2GamesTest():
+class vectorizedGoForwardGamesTest():
     def __init__(self):
-        self.goForward = big2Game()
+        self.goForward = goForwardGame()
     def reset(self):
         self.goForward.reset()
     def step(self,action):

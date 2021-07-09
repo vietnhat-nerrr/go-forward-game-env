@@ -1,8 +1,8 @@
-#main big2PPOSimulation class
+#main GoForwardPPOSimulation class
 
 import numpy as np
 from PPONetwork import PPONetwork, PPOModel
-from big2Game import vectorizedBig2Games
+from goForwardGame import vectorizedGoForwardGames
 import tensorflow as tf
 import joblib
 import copy
@@ -18,7 +18,7 @@ def sf01(arr):
 
 
 
-class big2PPOSimulation(object):
+class GoForwardPPOSimulation(object):
     
     def __init__(self, sess, *, inpDim = 732, nGames = 8, nSteps = 20, nMiniBatches = 4, nOptEpochs = 5, lam = 0.95, gamma = 0.995, ent_coef = 0.01, vf_coef = 0.5, max_grad_norm = 0.5, minLearningRate = 0.000001, learningRate, clipRange, saveEvery = 500):
         
@@ -36,7 +36,7 @@ class big2PPOSimulation(object):
         tf.global_variables_initializer().run(session=sess)
         
         #environment
-        self.vectorizedGame = vectorizedBig2Games(nGames)
+        self.vectorizedGame = vectorizedGoForwardGames(nGames)
         
         #params
         self.nGames = nGames
@@ -203,7 +203,7 @@ if __name__ == "__main__":
     import time
     
     with tf.Session() as sess:
-        mainSim = big2PPOSimulation(sess, nGames=64, nSteps=20, learningRate = 0.00025, clipRange = 0.2)
+        mainSim = GoForwardPPOSimulation(sess, nGames=64, nSteps=20, learningRate = 0.00025, clipRange = 0.2)
         start = time.time()
         mainSim.train(1000000000)
         end = time.time()

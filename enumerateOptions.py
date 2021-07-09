@@ -123,7 +123,7 @@ def firstPlayerOptions(hand,handOptions): #
                     index_ =[cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]]
                     if cardInds[0] != 0:
                         continue
-                    validIndReturn[c] = getIndex(inverseEightCardIndices[elevenCardIndices.index(index_)],8)
+                    validIndReturn[c] = getIndex(inverseEightCardIndices[eightCardIndices.index(index_)],8)
                     c += 1
         for i in range(len(card.inStraight)):
             if card.inStraight[i] !=0:
@@ -212,7 +212,7 @@ def greaterSixCardOptions(handOptions, prevHand=[],prevType = 0):
                     if prevType == 2:
                         if handOptions.cHand[cardInds[7]] < prevHand[7]:
                             continue
-                    validInds[c] = getIndex(inverseEightCardIndices[elevenCardIndices.index(index_)],8)
+                    validInds[c] = getIndex(inverseEightCardIndices[eightCardIndices.index(index_)],8)
                     c += 1
         if prevType == 2:
             pass
@@ -231,7 +231,7 @@ def greaterSixCardOptions(handOptions, prevHand=[],prevType = 0):
                     if prevType == 1:
                         if handOptions.cHand[cardInds[7]] < prevHand[7]:
                             continue
-                    validInds[c] = getIndex(inverseEightCardIndices[elevenCardIndices.index(index_)],8)
+                    validInds[c] = getIndex(inverseEightCardIndices[eightCardIndices.index(index_)],8)
                     c += 1
 
 
@@ -251,7 +251,7 @@ def greaterSixCardOptions(handOptions, prevHand=[],prevType = 0):
         #first deal with straights
         index_  = []
         if handOptions.nStraights[nCard-3] > 0:
-            for straight in handOptions.straights[2]:
+            for straight in handOptions.straights[nCard-3]:
                 for i in range(0,nCard):
                     cardInds[i] = handOptions.cards[straight[i]].indexInHand
                     index_.append(cardInds[i])
@@ -326,13 +326,13 @@ def sixCardOptions(handOptions, prevHand=[],prevType = 0):
                     cardInds[5] = handOptions.cards[four[5]].indexInHand
                     cardInds[6] = handOptions.cards[four[6]].indexInHand
                     cardInds[7] = handOptions.cards[four[7]].indexInHand
-                    validInds[c] = getIndex(inverseEightCardIndices[elevenCardIndices.index([cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]])],8)
+                    validInds[c] = getIndex(inverseEightCardIndices[eightCardIndices.index([cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]])],8)
                     c += 1
     if prevType == 2:
         pass
     else:
         if handOptions.nStraights[3] > 0:
-            print(handOptions.straights[3])
+            #print(handOptions.straights[3])
             for straight in handOptions.straights[3]:
                 cardInds[0] = handOptions.cards[straight[0]].indexInHand
                 cardInds[1] = handOptions.cards[straight[1]].indexInHand
@@ -415,7 +415,7 @@ def fourCardOptions(handOptions, prevHand = [], prevType = 0):
                     cardInds[5] = handOptions.cards[four[5]].indexInHand
                     cardInds[6] = handOptions.cards[four[6]].indexInHand
                     cardInds[7] = handOptions.cards[four[7]].indexInHand
-                    validInds[c] = getIndex(inverseEightCardIndices[elevenCardIndices.index([cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]])],8)
+                    validInds[c] = getIndex(inverseEightCardIndices[eightCardIndices.index([cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]])],8)
                     c += 1
     if prevType == 2:
         pass
@@ -516,7 +516,7 @@ def twoCardOptions(handOptions, prevHand = [], prevType = 0):
                 cardInds[5] = handOptions.cards[four[5]].indexInHand
                 cardInds[6] = handOptions.cards[four[6]].indexInHand
                 cardInds[7] = handOptions.cards[four[7]].indexInHand
-                validInds[c] = getIndex(inverseEightCardIndices[elevenCardIndices.index([cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]])],8)
+                validInds[c] = getIndex(inverseEightCardIndices[eightCardIndices.index([cardInds[0],cardInds[1],cardInds[2],cardInds[3],cardInds[4],cardInds[5],cardInds[6],cardInds[7]])],8)
                 c += 1
     if c > 0:
         return validInds[0:c]
