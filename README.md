@@ -1,2 +1,5 @@
-#Game go forward 
+# Game go forward 
+## Rules
+## How to run
+ 
 
