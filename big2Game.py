@@ -124,8 +124,8 @@ class big2Game:
         self.fillNeuralNetworkHand(4)
         # self.updateNeuralNetworkInputs(np.array([1]),whoHas3D)
         self.gameOver = 0
-        self.positionFinish = np.zeros((5,))
         self.rewards = np.zeros((4,))
+        self.positionFinish = np.zeros((5,),dtype=int)
         self.goCounter = 0  # đếm số bước đi
 
     def resetCanPlay(self):
@@ -635,8 +635,18 @@ class big2Game:
             else: check = False
         
 
-
     def assignRewards(self):
+        self.gameOver = 1
+        totCardsLeft = 0
+        for i in range(1,5):
+            nC = self.currentHands[i].size
+            if nC == 0:
+                winner = i
+            else:
+                self.rewards[i-1] = -1*nC
+                totCardsLeft += nC
+        self.rewards[winner-1] = totCardsLeft 
+    """     def assignRewards(self):
         numberDone = 0
         for i in self.positionFinish: #(0,0,0,0,0)
             if i != 0:
@@ -649,8 +659,6 @@ class big2Game:
         if numberDone == 2:
             self.positionFinish[self.playersGo] = 3
             self.gameOver = 1
-            print("....", end ="")
-            print(self.gameOver)
             for i in range(1,5):
                 if self.positionFinish[i] != 0:
                     self.positionFinish[i] = 4
@@ -664,7 +672,7 @@ class big2Game:
                 elif self.positionFinish[i] == 3:
                     self.rewards[i-1] = -10
                 elif self.positionFinish[i] == 4:
-                    self.rewards[i-1] = -20
+                    self.rewards[i-1] = -20  """
 
     def returnAvailableActions(self):
         if self.firstStep ==True and self.firstAction == False:
@@ -791,20 +799,20 @@ class big2Game:
         getOptionNC được sử dụng ngược với hàm index
         """
         if self.gameOver == 0:
-            print("... step")
+            
             reward = None
             done = False
             info = {}
-            info['Position result'] = self.positionFinish
+            info['Position result'] = self.positionFinish[1:5]
 
         else:
+            print("... end")
             reward = self.rewards
             done = True
             info = {}
             info['numTurns'] = self.goCounter
             info['rewards'] = self.rewards
             # what else is worth monitoring?
-            print("... must end")
             self.reset()
         return reward, done, info
 
