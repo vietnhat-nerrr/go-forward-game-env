@@ -131,7 +131,8 @@ def firstPlayerOptions(hand,handOptions): #
                 index_  = []
                 if handOptions.nStraights[i] > 0:
                     nCard = i + 3
-                    for straight in handOptions.straights[i]:
+                    print(handOptions.straights[i])
+                    for straight in handOptions.straights[i]:    
                         for i in range(0,nCard):
                             cardInds[i] = handOptions.cards[straight[i]].indexInHand
                             index_.append(cardInds[i])
@@ -252,11 +253,13 @@ def greaterSixCardOptions(handOptions, prevHand=[],prevType = 0):
         index_  = []
         if handOptions.nStraights[nCard-3] > 0:
             for straight in handOptions.straights[nCard-3]:
+                
                 for i in range(0,nCard):
                     cardInds[i] = handOptions.cards[straight[i]].indexInHand
                     index_.append(cardInds[i])
                 if prevType == 1:
                     if handOptions.cHand[cardInds[nCard-1]] < prevHand[nCard-1]:
+                        index_ = []
                         continue
                 if(nCard == 7):
                     validInds[c] = getIndex(inverseSevenCardIndices[sevenCardIndices.index(index_)],7)
@@ -301,11 +304,11 @@ def sixCardOptions(handOptions, prevHand=[],prevType = 0):
                 cardInds[4] = handOptions.cards[threepine[4]].indexInHand
                 cardInds[5] = handOptions.cards[threepine[5]].indexInHand
                 if prevType == 2:
-                    if handOptions.cHand[cardInds[0]] < prevHand[3]:
+                    if handOptions.cHand[cardInds[5]] < prevHand[5]:
                         continue
                 validInds[c] = getIndex(sixCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]][cardInds[4]][cardInds[5]],6)
                 c += 1
-        if prevType == 2:
+        if prevType == 2: # tứ quý và 4 đôi thông
             cardInds = np.zeros((4,),dtype=int)
             if len(handOptions.fourOfAKinds) > 0:
                 for four in handOptions.fourOfAKinds:
@@ -399,7 +402,7 @@ def fourCardOptions(handOptions, prevHand = [], prevType = 0):
                 cardInds[2] = handOptions.cards[four[2]].indexInHand
                 cardInds[3] = handOptions.cards[four[3]].indexInHand
                 if prevType == 2:
-                    if handOptions.cHand[cardInds[0]] < prevHand[3]:
+                    if handOptions.cHand[cardInds[3]] < prevHand[3]:
                         continue
                 validInds[c] = getIndex(fourCardIndices[cardInds[0]][cardInds[1]][cardInds[2]][cardInds[3]],4)
                 c += 1
@@ -523,9 +526,9 @@ def twoCardOptions(handOptions, prevHand = [], prevType = 0):
     else:
         return -1
     
-def oneCardOptions(hand,handOptions, prevHand = [], prevType = 0,startPlay= False, endPlay= False):
+def oneCardOptions(hand,handOptions, prevHand = [], prevType = 0):
     nCards = len(hand)
-    validInds = np.zeros((nCards+999,), dtype=int) # 3 mean tứ quý chaặt
+    validInds = np.zeros((nCards+999,), dtype=int) # 999 mean trường hợp chặt chaặt
     c = 0
     for i in range(nCards):
         if prevType == 1:
@@ -533,6 +536,7 @@ def oneCardOptions(hand,handOptions, prevHand = [], prevType = 0,startPlay= Fals
                 continue
         validInds[c] = getIndex(i,1)
         c += 1
+    ### Chặt heo với 3 đôi thông và tứ quá và 4 đôi thông 
     if prevType == 1 and ( prevHand[-1] == 52 or prevHand[-1] == 51 or prevHand[-1] == 50 or prevHand[-1] ==49):
         cardInds = np.zeros((4,),dtype=int)
         if len(handOptions.fourOfAKinds) > 0:

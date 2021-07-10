@@ -227,7 +227,7 @@ thirTeenCardIndices_ = {0:[0,1,2,3,4,5,6,7,8,9,10,11,12]}
 thirTeenCardIndices = list(twelveCardIndices_.values())
 inverseThirTeenCardIndices = list(twelveCardIndices_.keys())
 
-
+# How to use table index =>
 print(inverseNineCardIndices[nineCardIndices.index([2, 4, 5, 6, 7, 9, 10, 11, 12])])
 print(sixCardIndices[5][6][7][8][9][10])
 print(np.array(nineCardIndices[700]))

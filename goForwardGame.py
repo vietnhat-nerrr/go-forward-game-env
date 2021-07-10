@@ -9,7 +9,7 @@ from multiprocessing import Process, Pipe
 
 
 def convertAvailableActions(availAcs):
-    # convert from (1,0,0,1,1...) to (0, -math.inf, -math.inf, 0,0...) etc
+    #  (1,0,0,1,1...) to (0, -math.inf, -math.inf, 0,0...) 
     availAcs[np.nonzero(availAcs == 0)] = -math.inf
     availAcs[np.nonzero(availAcs == 1)] = 0
     return availAcs
@@ -89,7 +89,7 @@ class goForwardGame:
         # self.playersGo = whoHas3D + 1 # người chơi tiếp theo
         # if self.playersGo == 5:
         #    self.playersGo = 1
-        self.passCount = 0  # dont understand maybe đếm số lần bỏ lượt
+        self.passCount = 0  # đếm số lần bỏ lượt
         self.control = 0  # 1 player có thể có quyền kiểm soát
         self.noTurn = {0: False, 1: False, 2: False, 3: False,
                        4: False}  # 0 chèn vào để bắt đầu từ 1->4
@@ -102,7 +102,7 @@ class goForwardGame:
         self.numberOfOutput[4] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         # số sảnh bải từng đánh gồm 2->13
         self.numberOfOutput[1] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        # np.zeros((412,)) 1 vector đầu vào của mạng netron
+        # np.zeros((732,)) 1 vector đầu vào của mạng netron
         self.neuralNetworkInputs[1] = np.zeros((732,), dtype=int)
         self.neuralNetworkInputs[2] = np.zeros((732,), dtype=int)
         self.neuralNetworkInputs[3] = np.zeros((732,), dtype=int)
@@ -249,14 +249,14 @@ class goForwardGame:
             self.neuralNetworkInputs[nPlayer][phInd:] = 0
             self.neuralNetworkInputs[nnPlayer][phInd:] = 0
             self.neuralNetworkInputs[nnnPlayer][phInd:] = 0
-            self.neuralNetworkInputs[nnnPlayer][phInd+34] = 1  # maybe control
+            self.neuralNetworkInputs[nnnPlayer][phInd+34] = 1  #  control
 
     def updateNeuralNetworkInputs(self, prevHand, cPlayer):
         """
         cPlayer mean current player, table 2 and table 4, update info
         """
         self.fillNeuralNetworkHand(
-            cPlayer)  # có vẽ không cập nhật bảng 3 của current player
+            cPlayer)  #  không cập nhật bảng 3 của current player
         nPlayer = cPlayer-1  # đi theo chiều dảm dần
         if nPlayer == 0:
             nPlayer = 4
@@ -646,6 +646,7 @@ class goForwardGame:
                 self.rewards[i-1] = -1*nC
                 totCardsLeft += nC
         self.rewards[winner-1] = totCardsLeft 
+    # awards for game finish when all player end
     """     def assignRewards(self):
         numberDone = 0
         for i in self.positionFinish: #(0,0,0,0,0)
@@ -696,7 +697,7 @@ class goForwardGame:
                 # allow pass action
                 availableActions[enumerateOptions.passInd] = 1
 
-                # goIndex có lưu pass không
+                # goIndex khong lưu pass
                 prevHand = self.handsPlayed[self.goIndex-1].hand
                 nCardsToBeat = len(prevHand)
 
@@ -811,7 +812,7 @@ class goForwardGame:
             info = {}
             info['numTurns'] = self.goCounter
             info['rewards'] = self.rewards
-            # what else is worth monitoring?
+            
             self.reset()
         return reward, done, info
 
@@ -890,6 +891,10 @@ class vectorizedGoForwardGames(object):
         return self.currStates_wait()
 
     def showInfo(self):
+        '''
+        may be unnecessary => 'll hava some bug in this method
+        '''
+        
         pGos, currStates, currAvailAcs = self.getCurrStates()
         string = ""
         actions = []

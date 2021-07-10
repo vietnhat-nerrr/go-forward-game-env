@@ -280,7 +280,8 @@ class handsAvailable:
             if number == listValueCard[i]:
                 arrArgWhere.append(i)
         return arrArgWhere
-    def handStraight(self,arrValue,listNumber):
+    def handStraight(self,arrValue, listNumber):
+
         arrArg = {}
         index = 0
         totalHands = 1
@@ -292,14 +293,21 @@ class handsAvailable:
         lstIndex = []
         for k in range(totalHands):
             lstIndex.append([])
+            range_ = totalHands
+            
         for i in range(index):
+            count = 0
             start = 0
             end = 0
-            for j in range(len(arrArg[i])):
-                start = int(end)
-                end = int(totalHands/len(arrArg[i])*(j+1))
-                for k in range(start, end, 1):
-                    lstIndex[k].append(arrArg[i][j])
+            while end < totalHands :
+                for j in range(len(arrArg[i])):
+                    start = int(end)
+                    end = range_*count + int(range_/len(arrArg[i])*(j+1)) 
+                    for k in range(start, end, 1):
+                        lstIndex[k].append(arrArg[i][j])
+
+                count += 1
+            range_ = end - start
         return lstIndex
 
 
@@ -375,6 +383,13 @@ class handsAvailable:
                 cInd += 1
             if streak >= 2:
                 straightIndex =  self.handStraight(self.cardsValue,self.setValueCurrentHand[sInd:cInd+1])
+                """print("_______")
+                print(self.cardsValue)
+                print("_______")
+                print(self.setValueCurrentHand[sInd:cInd+1])
+                print("_______")
+                print(straightIndex)
+                print("_______") """
                 for straight in straightIndex:
                     lstAppend = []
                     for j in straight:

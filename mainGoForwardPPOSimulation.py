@@ -205,7 +205,8 @@ if __name__ == "__main__":
     with tf.Session() as sess:
         mainSim = GoForwardPPOSimulation(sess, nGames=64, nSteps=20, learningRate = 0.00025, clipRange = 0.2)
         start = time.time()
-        mainSim.train(1000000000)
+        #mainSim.train(1000000000)
+        mainSim.train(3850000)
         end = time.time()
         print("Time Taken: %f" % (end-start))
         
