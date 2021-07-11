@@ -97,7 +97,7 @@ sevenCardIndices = list(sevenCardIndices_.values())
 inverseSevenCardIndices = list(sevenCardIndices_.keys())
 
 eightCardIndices_ = {}
-for c_1 in range(5): # 0->11
+for c_1 in range(6): # 0->11
     n_1 = min(c_1+8,7)
     for c_2 in range(c_1+1,n_1): # 0->12
         n_2 = min(c_2+8,8)
@@ -121,7 +121,7 @@ inverseEightCardIndices = list(eightCardIndices_.keys())
 
 nineCardIndices_ = {}
 for c_1 in range(5): # 0->11
-    n_1 = min(c_1+8,7)
+    n_1 = min(c_1+8,6)
     for c_2 in range(c_1+1,n_1): # 0->12
         n_2 = min(c_2+8,7)
         for c_3 in range(c_2+1,n_2):
@@ -224,14 +224,16 @@ twelveCardIndices = list(twelveCardIndices_.values())
 inverseTwelveCardIndices = list(twelveCardIndices_.keys())
 
 thirTeenCardIndices_ = {0:[0,1,2,3,4,5,6,7,8,9,10,11,12]}
-thirTeenCardIndices = list(twelveCardIndices_.values())
-inverseThirTeenCardIndices = list(twelveCardIndices_.keys())
+thirTeenCardIndices = list(thirTeenCardIndices_.values())
+inverseThirTeenCardIndices = list(thirTeenCardIndices_.keys())
 
 # How to use table index =>
-print(inverseNineCardIndices[nineCardIndices.index([2, 4, 5, 6, 7, 9, 10, 11, 12])])
+print(inverseThirTeenCardIndices[thirTeenCardIndices.index([0,1,2,3,4,5,6,7,8,9,10,11,12])])
+print(np.array(thirTeenCardIndices[0]))
+
 print(sixCardIndices[5][6][7][8][9][10])
-print(np.array(nineCardIndices[700]))
 print(inverseSixCardIndices[1683])
+
 print([two,three,four,five,six,seven,eight,nine,ten,eleven,twelve])
 
 table = [twoCardIndices,threeCardIndices,fourCardIndices,fiveCardIndices,sixCardIndices,sevenCardIndices,eightCardIndices,nineCardIndices,tenCardIndices,elevenCardIndices,twelveCardIndices,thirTeenCardIndices,

@@ -131,7 +131,7 @@ def firstPlayerOptions(hand,handOptions): #
                 index_  = []
                 if handOptions.nStraights[i] > 0:
                     nCard = i + 3
-                    print(handOptions.straights[i])
+                    #print(handOptions.straights[i])
                     for straight in handOptions.straights[i]:    
                         for i in range(0,nCard):
                             cardInds[i] = handOptions.cards[straight[i]].indexInHand
