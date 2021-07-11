@@ -7,6 +7,7 @@ except:
   from baselines.baselines.a2c.utils import fc
 
 class PPONetwork(object):
+    # ... #
     
     def __init__(self, sess, obs_dim, act_dim, name):
         self.obs_dim = obs_dim
