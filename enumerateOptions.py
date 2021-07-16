@@ -5,8 +5,8 @@ import gameLogic
 
 nActions = np.array([13,33, 246, 670, 1263, 1711, 1716, 1286, 715, 286, 78, 13,1,8031])
 nAcSum = np.cumsum(nActions[:-1]) # [  13   46  292  962 2225 3936 5652 6938 7653 7939 8017 8030]
-#nActions = np.array([13,33,31,330,1287,1694]) luật chine
-#print(nAcSum) => [  13   46   77  407 1694] cọng dồn kết quả 
+
+
 with open('actionIndexTable.pkl','rb') as f:  # Python 3: open(..., 'rb')
     twoCardIndices, threeCardIndices, fourCardIndices, fiveCardIndices, sixCardIndices ,sevenCardIndices,eightCardIndices,nineCardIndices,tenCardIndices,elevenCardIndices,twelveCardIndices,thirTeenCardIndices,\
     inverseTwoCardIndices, inverseThreeCardIndices, inverseFourCardIndices, inverseFiveCardIndices,inverseSixCardIndices,inverseSevenCardIndices,inverseEightCardIndices,inverseNineCardIndices,inverseTenCardIndices,inverseElevenCardIndices,inverseTwelveCardIndices,inverseThirTeenCardIndices = pickle.load(f)
@@ -55,7 +55,7 @@ def getOptionNC(ind):
 def firstPlayerOptions(hand,handOptions): # 
     if handOptions.cards[1].indexInHand == 0: ## 3 Bích đi trước kiêm tra 3 Bích có trong bài không
         card = handOptions.cards[1]
-        validIndReturn = np.zeros((100,), dtype=int) # 100 ước lượng
+        validIndReturn = np.zeros((100+999,), dtype=int) # 100 ước lượng
         c = 0
         if card.inPair != 0:
 
@@ -192,7 +192,7 @@ def greaterSixCardOptions(handOptions, prevHand=[],prevType = 0):
     #         = 2 - fourPines
     nCard = len(prevHand)
     if(nCard == 8):
-        validInds = np.zeros((nActions[7],),dtype=int)
+        validInds = np.zeros((nActions[7]+999,),dtype=int)
         c = 0
         cardInds = np.zeros((8,),dtype=int) #reuse
         if prevType == 1:
@@ -245,7 +245,7 @@ def greaterSixCardOptions(handOptions, prevHand=[],prevType = 0):
         #         = 1 - straight
       
         nCard = len(prevHand)
-        validInds = np.zeros((nActions[nCard-1],),dtype=int)
+        validInds = np.zeros((nActions[nCard-1]+999,),dtype=int)
         c = 0
         cardInds = np.zeros((nCard,),dtype=int) #reuse
         
@@ -288,7 +288,7 @@ def sixCardOptions(handOptions, prevHand=[],prevType = 0):
     #prevType = 0 - no hand, you have control and can play any 5 card
     #         = 1 - straight
     #         = 2 - threePines
-    validInds = np.zeros((nActions[5],),dtype=int)
+    validInds = np.zeros((nActions[5]+999,),dtype=int)
     c = 0
     cardInds = np.zeros((6,),dtype=int) #reuse
     if prevType == 1:
@@ -360,7 +360,7 @@ def fiveCardOptions(handOptions, prevHand=[],prevType=0):
     #         = 1 - straight
       
         
-    validInds = np.zeros((nActions[4],),dtype=int)
+    validInds = np.zeros((nActions[4]+999,),dtype=int)
     c = 0
     cardInds = np.zeros((5,),dtype=int) #reuse
     
@@ -388,7 +388,7 @@ def fiveCardOptions(handOptions, prevHand=[],prevType=0):
 
 def fourCardOptions(handOptions, prevHand = [], prevType = 0):
     #prevType: 1 - straight, 2 - fourofakind    
-    validInds = np.zeros((nActions[3],),dtype=int)
+    validInds = np.zeros((nActions[3]+999,),dtype=int)
     c = 0
     cardInds = np.zeros((4,),dtype=int) #reuse
     if prevType == 1:
@@ -445,7 +445,7 @@ def fourCardOptions(handOptions, prevHand = [], prevType = 0):
 def threeCardOptions(handOptions, prevHand = [], prevType = 0):
     #prevType = 1 - played three card strange
     #prevType = 2 - played three of a kind
-    validInds = np.zeros((nActions[2],), dtype=int)
+    validInds = np.zeros((nActions[2]+999,), dtype=int)
     c = 0
     cardInds = np.zeros((3,), dtype=int) #reuse
     if prevType == 1:
@@ -484,7 +484,7 @@ def threeCardOptions(handOptions, prevHand = [], prevType = 0):
 def twoCardOptions(handOptions, prevHand = [], prevType = 0):
     #prevType = 1 - played a pair
     #prevType = 0 - played has control
-    validInds = np.zeros((nActions[1],), dtype=int)
+    validInds = np.zeros((nActions[1]+999,), dtype=int)
     c = 0
     cardInds = np.zeros((2,), dtype=int)
     
