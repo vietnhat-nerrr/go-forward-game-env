@@ -95,8 +95,8 @@ class ANN():
         with open(path) as f:
             data = json.load(f)
             layers = []
-            layers_unit = []
-            for v in enumerate(data.values()):
-                layers_unit.append(len(v))
+            layers_unit = data['layers_unit']
+            del data['layers_unit']
+            for v in data.values():
                 layers.append(v)
             return ANN(layers_unit=layers_unit, supervise=True, brain=layers)
